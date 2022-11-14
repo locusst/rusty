@@ -1,7 +1,8 @@
 use super::{Page, Site};
-use maud::{html, Markup};
+use maud::{html, Markup, PreEscaped};
 
 pub struct Template {
+    pub site: Site,
     pub page: Page,
 }
 
@@ -10,8 +11,8 @@ pub struct Template {
 // 2. page
 
 impl Template {
-    pub fn new(page: Page) -> Self {
-        Self { page }
+    pub fn new(site: Site, page: Page) -> Self {
+        Self { site, page }
     }
 
     pub fn head(title: String) -> Markup {
@@ -20,19 +21,26 @@ impl Template {
                 title {(title)}
                 meta charset="utf-8";
                 meta name="viewport" content="width=device-width, initial-scale=1.0";
+                link rel="stylesheet" href="style.css";
             }
         }
     }
 
-    pub fn index(&self, site: &Site) -> Markup {
+    pub fn index(&self) -> Markup {
         html! {
-        (Self::head(site.title.clone()))
+        (Self::head(self.site.title.clone()))
         body {
-            h1 { (site.title) }
-            ul {
-                @for page in &site.pages {
-                    li {
-                        a href=(format!("./{}.html", page.title)) { (page.title) }
+            div class="c"{
+                h1 { a href="/" {(self.site.title.clone())} }
+                p { (self.site.description) }
+                p { "powered by rusty!" }
+                hr {}
+                h3 { "Pages" }
+                ul {
+                    @for page in &self.site.pages {
+                        li {
+                            a href=(format!("{}.html", page.title)) { (page.title) }
+                        }
                     }
                 }
             }
@@ -44,10 +52,15 @@ impl Template {
         html! {
         (Self::head(self.page.title.clone()))
         body {
-            h1 { (self.page.title) }
-            h2 { (self.page.author) }
-            h3 { (self.page.date) }
-            (maud::PreEscaped(self.page.content.clone()))
+            div class="c"{
+                h1 { a href="index.html" { (self.site.title) } }
+                p { "powered by rusty!" }
+                hr {}
+                h2 { (self.page.title) }
+                p { (self.page.author) }
+                p { (self.page.date) }
+                (PreEscaped(&self.page.content))
+            }
         }
         }
     }

@@ -1,5 +1,6 @@
 use super::Page;
 use comrak::{markdown_to_html, ComrakOptions};
+#[derive(Clone)]
 pub struct Renderer {
     options: ComrakOptions,
 }

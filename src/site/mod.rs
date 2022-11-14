@@ -2,6 +2,7 @@ pub mod render;
 pub mod template;
 use std::io::Write;
 
+#[derive(Clone)]
 pub struct Page {
     pub title: String,
     pub author: String,
@@ -48,6 +49,16 @@ impl Site {
         }
     }
 
+    pub fn clone(&self) -> Self {
+        Self {
+            title: self.title.clone(),
+            description: self.description.clone(),
+            index: self.index.clone(),
+            pages: self.pages.clone(),
+            renderer: self.renderer.clone(),
+        }
+    }
+
     pub fn render(&mut self, source: &str) {
         let start = std::time::Instant::now();
         if std::fs::metadata(source).is_err() {
@@ -62,12 +73,14 @@ impl Site {
                 self.pages.push(page);
             }
         }
+        let mut content_template = template::Template::new(self.clone(), Page::new());
         for page in &mut self.pages {
             let start = std::time::Instant::now();
             page.content = self.renderer.render(&page.content);
-            let content_template = template::Template::new(page.clone());
-            let content = content_template.page().into_string();
-            page.content = content;
+            content_template.page = page.clone();
+            page.content = content_template.page().into_string();
+            let content = content_template.page();
+            page.content = content.into_string();
             println!(
                 "\"{}\" rendered in {}ms",
                 page.title.clone(),
@@ -75,8 +88,8 @@ impl Site {
             );
         }
 
-        let index_template = template::Template::new(Page::new());
-        let index = index_template.index(&self);
+        let index_template = template::Template::new(self.clone(), self.index.clone());
+        let index = index_template.index();
         self.index.content = index.into_string();
         println!("Rendered in {}ms", start.elapsed().as_millis());
     }
@@ -88,7 +101,8 @@ impl Site {
         }
         for page in &self.pages {
             let start = std::time::Instant::now();
-            let mut file = std::fs::File::create(format!("{}/{}.html", output, &page.title)).unwrap();
+            let mut file =
+                std::fs::File::create(format!("{}/{}.html", output, &page.title)).unwrap();
             file.write_all(page.content.as_bytes()).unwrap();
             println!("Wrote {} in {}ms", &page.title, start.elapsed().as_millis());
         }
