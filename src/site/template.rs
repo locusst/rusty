@@ -32,7 +32,6 @@ impl Template {
         body {
             div class="c"{
                 h1 { a href="/" {(self.site.title.clone())} }
-                p { (self.site.description) }
                 p { "powered by rusty!" }
                 hr {}
                 h3 { "Pages" }
