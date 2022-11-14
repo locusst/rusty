@@ -1,6 +1,6 @@
 pub mod render;
 pub mod template;
-use std::{fs, io::Write};
+use std::{io::Write};
 
 pub struct Page {
     pub title: String,
@@ -50,14 +50,14 @@ impl Site {
 
     pub fn render(&mut self, source: &str) {
         let start = std::time::Instant::now();
-        if fs::metadata(source).is_err() {
+        if std::fs::metadata(source).is_err() {
             panic!("Source directory does not exist");
         }
-        let paths = fs::read_dir(source).unwrap();
+        let paths = std::fs::read_dir(source).unwrap();
         for path in paths {
             let path = path.unwrap().path().to_str().unwrap().to_string();
             if path.ends_with(".md") {
-                let content = fs::read_to_string(path).unwrap();
+                let content = std::fs::read_to_string(path).unwrap();
                 let page = render::parse_string(&content);
                 self.pages.push(page);
             }
@@ -83,16 +83,16 @@ impl Site {
 
     pub fn write(&self, output: &str) {
         let start = std::time::Instant::now();
-        if fs::metadata(output).is_err() {
-            fs::create_dir(output).unwrap();
+        if std::fs::metadata(output).is_err() {
+            std::fs::create_dir_all(output).unwrap();
         }
         for page in &self.pages {
             let start = std::time::Instant::now();
-            let mut file = fs::File::create(format!("{}/{}.html", output, &page.title)).unwrap();
+            let mut file = std::fs::File::create(format!("{}/{}.html", output, &page.title)).unwrap();
             file.write_all(page.content.as_bytes()).unwrap();
             println!("Wrote {} in {}ms", &page.title, start.elapsed().as_millis());
         }
-        let mut file = fs::File::create(format!("{}/index.html", output)).unwrap();
+        let mut file = std::fs::File::create(format!("{}/index.html", output)).unwrap();
         file.write_all(self.index.content.as_bytes()).unwrap();
         println!("Wrote in {}ms", start.elapsed().as_millis());
     }

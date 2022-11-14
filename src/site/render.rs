@@ -58,7 +58,7 @@ fn parse_front_matter(lines: &mut std::str::Lines) -> FrontMatter {
                 in_front_matter = true;
             }
         } else if in_front_matter {
-            let mut parts = line.split(":");
+            let mut parts = line.split(':');
             let key = parts.next().unwrap().trim();
             let value = parts.next().unwrap().trim();
             match key {
