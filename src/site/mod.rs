@@ -1,6 +1,6 @@
 pub mod render;
 pub mod template;
-use std::{io::Write};
+use std::io::Write;
 
 pub struct Page {
     pub title: String,
