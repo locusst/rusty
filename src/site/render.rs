@@ -1,5 +1,5 @@
 use super::Page;
-use comrak::{markdown_to_html, ComrakOptions};
+use comrak::{ markdown_to_html, ComrakOptions };
 #[derive(Clone)]
 pub struct Renderer {
     options: ComrakOptions,
@@ -65,15 +65,12 @@ fn parse_front_matter(lines: &mut std::str::Lines) -> FrontMatter {
             match key {
                 "title" => {
                     front_matter.title = value.to_string();
-                    println!("title: {}: {}", key, value);
                 }
                 "author" => {
                     front_matter.author = value.to_string();
-                    println!("author: {}: {}", key, value);
                 }
                 "date" => {
                     front_matter.date = value.to_string();
-                    println!("date: {}: {}", key, value);
                 }
                 _ => (),
             }

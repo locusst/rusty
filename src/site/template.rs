@@ -1,14 +1,10 @@
-use super::{Page, Site};
-use maud::{html, Markup, PreEscaped};
+use super::{ Page, Site };
+use maud::{ html, Markup, PreEscaped };
 
 pub struct Template {
     pub site: Site,
     pub page: Page,
 }
-
-// two template types:
-// 1. index
-// 2. page
 
 impl Template {
     pub fn new(site: Site, page: Page) -> Self {
@@ -31,7 +27,7 @@ impl Template {
         (Self::head(self.site.title.clone()))
         body {
             div class="c"{
-                h1 { a href="/" {(self.site.title.clone())} }
+                h1 { a href="index.html" {(self.site.title.clone())} span style="margin-left:0.9rem; font-variant: small-caps; font-size:1.5rem" {(self.site.description.clone())} }
                 p { "powered by rusty!" }
                 hr {}
                 h3 { "Pages" }
@@ -52,7 +48,7 @@ impl Template {
         (Self::head(self.page.title.clone()))
         body {
             div class="c"{
-                h1 { a href="index.html" { (self.site.title) } }
+                h1 { a href="index.html" {(self.site.title.clone())} span style="margin-left:0.9rem; font-variant: small-caps; font-size:1.5rem" {(self.site.description.clone())} }
                 p { "powered by rusty!" }
                 hr {}
                 h2 { (self.page.title) }

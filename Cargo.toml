@@ -9,3 +9,4 @@ edition = "2021"
 clap = { version = "4.0.22", features = ["derive"] }
 comrak = "0.14"
 maud = "*"
+toml = "0.5.9"

@@ -1,7 +1,7 @@
 pub mod render;
 pub mod template;
 use std::io::Write;
-
+use toml::Value;
 #[derive(Clone)]
 pub struct Page {
     pub title: String,
@@ -59,6 +59,18 @@ impl Site {
         }
     }
 
+    pub fn load_config(&mut self, source: &str) {
+        // [site]
+        // title = "Rusty"
+        // description = "A static site generator written in Rust"
+
+        // load config from self./config.toml
+        let config = std::fs::read_to_string(format!("{}/config.toml", source)).unwrap();
+        let config: Value = toml::from_str(&config).unwrap();
+        self.title = config["site"]["title"].as_str().unwrap().to_string();
+        self.description = config["site"]["description"].as_str().unwrap().to_string();
+    }
+
     pub fn render(&mut self, source: &str) {
         let start = std::time::Instant::now();
         if std::fs::metadata(source).is_err() {
@@ -82,7 +94,7 @@ impl Site {
             let content = content_template.page();
             page.content = content.into_string();
             println!(
-                "\"{}\" rendered in {}ms",
+                "Page \"{}\" rendered in {}ms",
                 page.title.clone(),
                 start.elapsed().as_millis()
             );
@@ -100,11 +112,10 @@ impl Site {
             std::fs::create_dir_all(output).unwrap();
         }
         for page in &self.pages {
-            let start = std::time::Instant::now();
-            let mut file =
-                std::fs::File::create(format!("{}/{}.html", output, &page.title)).unwrap();
+            let mut file = std::fs::File
+                ::create(format!("{}/{}.html", output, &page.title))
+                .unwrap();
             file.write_all(page.content.as_bytes()).unwrap();
-            println!("Wrote {} in {}ms", &page.title, start.elapsed().as_millis());
         }
         let mut file = std::fs::File::create(format!("{}/index.html", output)).unwrap();
         file.write_all(self.index.content.as_bytes()).unwrap();
