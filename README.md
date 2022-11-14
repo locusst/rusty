@@ -6,7 +6,7 @@ This is a personal project of mine; Don't expect any support for your use case (
 
 ### Usage
 ```bash
-rusty [FLAGS] [OPTIONS] <source> <output>
+rusty [FLAGS] [OPTIONS]
 ```
 
 ### Flags
