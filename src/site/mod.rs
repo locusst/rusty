@@ -77,7 +77,7 @@ impl Site {
         for page in &mut self.pages {
             let start = std::time::Instant::now();
             page.content = self.renderer.render(&page.content);
-            content_template.page = page.clone();
+            content_template.page.clone_from(page);
             page.content = content_template.page().into_string();
             let content = content_template.page();
             page.content = content.into_string();
