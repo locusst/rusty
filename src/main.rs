@@ -19,8 +19,6 @@ fn main() {
     let start = std::time::Instant::now();
     let args = Args::parse();
     let mut site = site::Site::new();
-    site.load_config(&args.directory);
-    site.render(&args.directory);
-    site.write(&args.output);
+    site.load_render_write(&args.directory, &args.output);
     println!("Site rendered in {}ms", start.elapsed().as_millis());
 }

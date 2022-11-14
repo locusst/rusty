@@ -121,4 +121,10 @@ impl Site {
         file.write_all(self.index.content.as_bytes()).unwrap();
         println!("Wrote in {}ms", start.elapsed().as_millis());
     }
+
+    pub fn load_render_write(&mut self, source: &str, output: &str) {
+        self.load_config(source);
+        self.render(source);
+        self.write(output);
+    }
 }
