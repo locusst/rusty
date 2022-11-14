@@ -58,7 +58,7 @@ fn parse_front_matter(lines: &mut std::str::Lines) -> FrontMatter {
             } else {
                 in_front_matter = true;
             }
-        } else if in_front_matter && line != "---" && line != "" {
+        } else if in_front_matter && line != "---" && !line.is_empty() {
             let mut parts = line.split(':');
             let key = parts.next().unwrap().trim();
             let value = parts.next().unwrap().trim();
@@ -74,7 +74,7 @@ fn parse_front_matter(lines: &mut std::str::Lines) -> FrontMatter {
                 }
                 _ => (),
             }
-        } else if in_front_matter && line == "" {
+        } else if in_front_matter && line.is_empty() {
             continue;
         }
     }
