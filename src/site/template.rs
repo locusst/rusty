@@ -27,14 +27,14 @@ impl Template {
         (Self::head(self.site.title.clone()))
         body {
             div class="c"{
-                h1 { a href="index.html" {(self.site.title.clone())} span style="margin-left:0.9rem; font-variant: small-caps; font-size:1.5rem" {(self.site.description.clone())} }
+                h1 { a href="/" {(self.site.title.clone())} span style="margin-left:0.9rem; font-variant: small-caps; font-size:1.5rem" {(self.site.description.clone())} }
                 p { "powered by rusty!" }
                 hr {}
                 h3 { "Pages" }
                 ul {
                     @for page in &self.site.pages {
                         li {
-                            a href=(format!("{}.html", page.title)) { (page.title) }
+                            a href=(format!("/pages/{}.html", page.title.clone())) {(page.title.clone())}
                         }
                     }
                 }
@@ -48,7 +48,7 @@ impl Template {
         (Self::head(self.page.title.clone()))
         body {
             div class="c"{
-                h1 { a href="index.html" {(self.site.title.clone())} span style="margin-left:0.9rem; font-variant: small-caps; font-size:1.5rem" {(self.site.description.clone())} }
+                h1 { a href="/" {(self.site.title.clone())} span style="margin-left:0.9rem; font-variant: small-caps; font-size:1.5rem" {(self.site.description.clone())} }
                 p { "powered by rusty!" }
                 hr {}
                 h2 { (self.page.title) }

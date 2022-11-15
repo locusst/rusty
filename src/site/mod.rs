@@ -109,11 +109,13 @@ impl Site {
     pub fn write(&self, output: &str) {
         let start = std::time::Instant::now();
         if std::fs::metadata(output).is_err() {
-            std::fs::create_dir_all(output).unwrap();
+            // output/pages
+            std::fs::create_dir_all(format!("{}/pages", output)).unwrap();
         }
+
         for page in &self.pages {
             let mut file = std::fs::File
-                ::create(format!("{}/{}.html", output, &page.title))
+                ::create(format!("{}/pages/{}.html", output, &page.title))
                 .unwrap();
             file.write_all(page.content.as_bytes()).unwrap();
         }
